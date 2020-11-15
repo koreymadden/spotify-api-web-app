@@ -39,25 +39,76 @@ button:hover {
   left: 0;
   position: relative;
   height: 35px;
-  width: 80px;
+  min-width: 80px;
+  min-width: -webkit-max-content;
+  min-width: -moz-max-content;
+  min-width: max-content;
   background-color: #1aa34a;
   cursor: pointer;
   margin: 10px;
+  padding: 0 15px;
   border-radius: 50px;
   line-height: 35px;
-  display: block;
+  display: inline-block;
   -webkit-transition: 500ms;
   transition: 500ms;
   text-decoration: none;
   color: #000000;
+  overflow: hidden;
 }
 
 #login:hover {
   background-color: #1ed760;
 }
 
+#login-a {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
 #now-playing-img-div {
   margin-top: 80px;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.overlay {
+  position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: transparent;
+  color: #d3d3d3;
+  height: 100%;
+  width: 300px;
+  cursor: pointer;
+}
+
+.overlay:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.overlay:hover ion-icon {
+  display: block;
+  font-size: 64px;
+  display: block;
+}
+
+.overlay ion-icon {
+  display: none;
+  font-size: 64px;
 }
 
 #transfer-playback-selection {
@@ -185,6 +236,90 @@ button:hover {
   height: 25px;
   border-radius: 50%;
   background: #282828;
+  cursor: pointer;
+}
+
+#status-bar {
+  background-color: #282828;
+  color: #efefef;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#search-songs {
+  border-radius: 50px;
+  width: 200px;
+  height: 30px;
+  margin-left: 15px;
+  background-color: #d3d3d3;
+  color: #282828;
+  padding-left: 25px;
+  line-height: 30px;
+}
+
+#search-songs:focus {
+  background-color: #efefef;
+  color: #000000;
+  -webkit-box-shadow: 0 0 3pt 2pt #1aa34a;
+          box-shadow: 0 0 3pt 2pt #1aa34a;
+}
+
+#search-songs-icon {
+  position: fixed;
+  bottom: 17px;
+  left: 20px;
+  color: #282828;
+}
+
+#search-results {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  top: 0;
+  background-color: #d3d3d3;
+}
+
+#search-results::before {
+  content: attr(data-text);
+  display: block;
+  font-weight: 600;
+  letter-spacing: 1px;
+  font-size: 48px;
+}
+
+.hide {
+  display: none;
+}
+
+.search-result {
+  display: block;
+  height: 40px;
+  line-height: 40px;
+  margin: 5px 5px;
+  overflow-x: hidden;
+  border-bottom: 1px solid #efefef;
+  font-size: 18px;
+}
+
+#close-search {
+  position: fixed;
+  top: 13px;
+  right: 15px;
+  color: #282828;
+  font-size: 48px;
   cursor: pointer;
 }
 /*# sourceMappingURL=App.css.map */

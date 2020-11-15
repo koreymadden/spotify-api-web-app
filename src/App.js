@@ -2,6 +2,7 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import SpotifyWebApi from 'spotify-web-api-js';
 import DeviceList from './deviceList'
+import SearchResult from './SearchResult';
 
 const spotifyApi = new SpotifyWebApi();
 
@@ -10,12 +11,14 @@ function App() {
   const hashed = getHashParams();
   const [counter, changeCounter] = useState(0);
   const [loginStatus, setLoginStatus] = useState(hashed.access_token)
+  const [userData, setUserData] = useState({})
   const [nowPlaying, setNowPlaying] = useState({})
   const [isPlaying, setIsPlaying] = useState(false)
   const [activeDevice, setActiveDevice] = useState({})
   const [testingData, setTestingData] = useState('Test Data')
   const [currentDevices, setCurrentDevices] = useState([])
   const [volume, setVolume] = useState(-1)
+  const [searchedTracks, setSearchedTracks] = useState([])
   const [trackProgress, setTrackProgress] = useState({
     actual: 0,
     max: 100
@@ -32,7 +35,7 @@ function App() {
   if (!currentDevices.length) {
     getAllDevices()
   }
-
+  
   useEffect(() => {
     setInterval(() => {
       changeCounter(prevCounter => prevCounter + 1);
@@ -85,6 +88,16 @@ function App() {
           console.log(item.track.album.name)
         })
       });
+
+      fetch(
+        'https://api.spotify.com/v1/me',
+        {headers: {'Authorization': 'Bearer ' + loginStatus}}
+        ).then(response => {
+          return response.json()
+        }).then(data => {
+          console.log(data)
+          setUserData(data)
+        })
   }
 
   function getAllDevices() {
@@ -134,13 +147,58 @@ function App() {
       });
   }
 
+  function searchSongs(searchText) {
+    if (searchText === '') {
+      toggleSearch('close')
+      return
+    }
+    spotifyApi.searchTracks(searchText)
+      .then(function (data) {
+        console.log(`Search by "${searchText}"`, data);
+        setSearchedTracks(data.tracks.items)
+      }, function (err) {
+        console.error(err);
+      });
+  }
+
+  function toggleSearch(value, searchText) {
+    if (searchText === '') return
+    const searchMenu = document.getElementById('search-results');
+    const closeIcon = document.getElementById('close-search-div');
+    if (value === 'close') {
+      searchMenu.classList.add('hide')
+      closeIcon.classList.add('hide')
+    } else if (value === 'open') {
+      searchMenu.classList.remove('hide')
+      closeIcon.classList.remove('hide')
+    }
+  }
+
+  function addToFavorites() {
+    let favorite = nowPlaying;
+    console.log('favorite: ', favorite);
+    
+    spotifyApi.addToMySavedTracks([favorite.id])
+    .then(data => {
+      console.log( `Added ${favorite.name}!`)
+    })
+  }
+
   return (
     <div className="App">
-      <a href='http://localhost:8888/'>
-        <div id='login'>Login</div>
+      <a id='login-a' href='http://localhost:8888/'>
+        <div id='login'>{
+          userData.display_name 
+          ? <span>{userData.display_name}</span> 
+          : <span id='login-text'>Login</span>
+          }
+        </div>
       </a>
       <div id='now-playing-img-div'>
         <img id='now-playing-img' src={nowPlaying?.album?.images[0]?.url} alt="Album Art" width='300' height='300' />
+        <div className="overlay" onClick={() => addToFavorites()}>
+          <ion-icon name="heart-sharp"></ion-icon>
+        </div>
       </div>
       <div id='now-playing-name'>
         {nowPlaying.name}
@@ -175,8 +233,23 @@ function App() {
       </button>
       <div>
         {testingData}
-      </div><div>
+      </div>
+      <div>
         {counter}
+      </div>
+      <div className='hide' id='search-results' data-text={document.getElementById('search-songs')?.value || ''}>
+        {
+          searchedTracks.map(track => {
+            return <SearchResult key={track.id} name={track.name} />
+          })
+        }
+      </div>
+      <div id='close-search-div' className="hide">
+        <ion-icon id='close-search' name="close-sharp" onClick={() => toggleSearch('close')}></ion-icon>
+      </div>
+      <div id="status-bar">
+        <ion-icon id="search-songs-icon" name="search-sharp"></ion-icon>
+        <input type="search" autoComplete='off' name="Songs" id='search-songs' onChange={e => {searchSongs(e.target.value); toggleSearch('open', e.target.value)}} />
       </div>
     </div>
   );

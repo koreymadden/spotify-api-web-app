@@ -44,23 +44,57 @@ button {
   left: 0;
   position: relative;
   height: 35px;
-  width: 80px;
+  min-width: 80px;
+  min-width: max-content;
   background-color: $primary;
   cursor: pointer;
   margin: 10px;
+  padding: 0 15px;
   border-radius: 50px;
   line-height: 35px;
-  display: block;
+  display: inline-block;
   transition: 500ms;
   text-decoration: none;
   color: #000000;
   &:hover {
     background-color: $primary-hover;
   }
+  overflow: hidden;
+}
+
+#login-a {
+  display: flex;
 }
 
 #now-playing-img-div {
   margin-top: 80px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.overlay {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  color: $third;
+  height: 100%;
+  width: 300px;
+  cursor: pointer;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  &:hover ion-icon {
+      display: block;
+      font-size: 64px;
+      display: block;
+  }
+  ion-icon {
+    display: none;
+    font-size: 64px;
+  }
 }
 
 #transfer-playback-selection {
@@ -172,5 +206,81 @@ button {
   height: 25px;
   border-radius: 50%;
   background: $secondary;
+  cursor: pointer;
+}
+
+#status-bar {
+  background-color: $secondary;
+  color: $third-hover;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+#search-songs {
+  border-radius: 50px;
+  width: 200px;
+  height: 30px;
+  margin-left: 15px;
+  background-color: $third;
+  color: $secondary;
+  padding-left: 25px;
+  line-height: 30px;
+  &:focus {
+    background-color: $third-hover;
+    color: $black;
+    box-shadow: 0 0 3pt 2pt $primary;
+  }
+}
+
+#search-songs-icon {
+  position: fixed;
+  bottom: 17px;
+  left: 20px;
+  color: $secondary;
+}
+
+#search-results {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 50px;
+  top: 0;
+  background-color: $third;
+  &::before {
+    content: attr(data-text);
+    display: block;
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size: 48px;
+  }
+
+}
+
+.hide {
+  display: none;
+}
+
+.search-result {
+  display: block;
+  height: 40px;
+  line-height: 40px;
+  margin: 5px 5px;
+  overflow-x: hidden;
+  border-bottom: 1px solid $third-hover;
+  font-size: 18px;
+}
+
+#close-search {
+  position: fixed;
+  top: 13px;
+  right: 15px;
+  color: $secondary;
+  font-size: 48px;
   cursor: pointer;
 }
