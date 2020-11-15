@@ -1,13 +1,9 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import Spotify from 'spotify-web-api-js';
+import SpotifyWebApi from 'spotify-web-api-js';
 import DeviceList from './deviceList'
 
-const spotifyWebApi = new Spotify();
-let skipVolumeMessage = false;
-let skipDurationMessage = false;
-let ignoreDurationMessages = false;
-let ignoreVolumeMessages = false;
+const spotifyApi = new SpotifyWebApi();
 
 function App() {
   
@@ -16,23 +12,25 @@ function App() {
   const [loginStatus, setLoginStatus] = useState(hashed.access_token)
   const [nowPlaying, setNowPlaying] = useState({})
   const [isPlaying, setIsPlaying] = useState(false)
+  const [activeDevice, setActiveDevice] = useState({})
   const [testingData, setTestingData] = useState('Test Data')
   const [currentDevices, setCurrentDevices] = useState([])
-  const [targetTransferDevice, setTargetTransferDevice] = useState('')
   const [volume, setVolume] = useState(-1)
   const [trackProgress, setTrackProgress] = useState({
     actual: 0,
     max: 100
   })
 
+  let skipVolumeMessage = false;
+  let skipDurationMessage = false;
+  let ignoreDurationMessages = false;
+  let ignoreVolumeMessages = false;
+
   if (loginStatus) {
-    spotifyWebApi.setAccessToken(loginStatus)
+    spotifyApi.setAccessToken(loginStatus)
   }
   if (!currentDevices.length) {
     getAllDevices()
-  }
-  if (JSON.stringify(nowPlaying) === '{}') {
-    getNowPlaying()
   }
 
   useEffect(() => {
@@ -45,18 +43,20 @@ function App() {
   function getHashParams() {
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
-    while ( e = r.exec(q)) {
-       hashParams[e[1]] = decodeURIComponent(e[2]);
+      q = window.location.hash.substring(1);
+    while (e = r.exec(q)) {
+      hashParams[e[1]] = decodeURIComponent(e[2]);
     }
     return hashParams;
   }
 
   function getNowPlaying() {
-    spotifyWebApi.getMyCurrentPlaybackState()
+    spotifyApi.getMyCurrentPlaybackState()
     .then(response => {
+      document.title = response.item.name;
       setNowPlaying(response.item)
       setIsPlaying(response.is_playing)
+      setActiveDevice(response.device)
       if (volume === -1 && !ignoreVolumeMessages) {
         !skipVolumeMessage ? setVolume(response.device.volume_percent) : skipVolumeMessage = false;
       }
@@ -69,7 +69,7 @@ function App() {
 
   function setUserVolume(value) {
     skipVolumeMessage = true;
-    spotifyWebApi.setVolume(value)
+    spotifyApi.setVolume(value)
     .then(function () {
       console.log(`Setting API volume to ${value}.`);
       });
@@ -77,7 +77,7 @@ function App() {
   
   function testing() {
     let limit = 3;
-    spotifyWebApi.getMyRecentlyPlayedTracks({
+    spotifyApi.getMyRecentlyPlayedTracks({
       limit
     }).then(function(data) {
         console.log(`Your ${limit} most recently played tracks are:`);
@@ -88,7 +88,7 @@ function App() {
   }
 
   function getAllDevices() {
-    spotifyWebApi.getMyDevices()
+    spotifyApi.getMyDevices()
     .then(response => {
       setCurrentDevices(response.devices)
     })
@@ -96,7 +96,7 @@ function App() {
 
   function transferPlayback(device) {
     if (!device) return
-    spotifyWebApi.transferMyPlayback([device])
+    spotifyApi.transferMyPlayback([device])
       .then(function () {
         console.log('Transfering playback to ' + device);
       })
@@ -104,20 +104,20 @@ function App() {
 
   function playPause() {
     if (isPlaying) {
-      spotifyWebApi.pause()
+      spotifyApi.pause()
     } else {
-      spotifyWebApi.play()
+      spotifyApi.play()
     }
   }
 
   function changeTrack(direction) {
     if (direction === 'next') {
-      spotifyWebApi.skipToNext()
+      spotifyApi.skipToNext()
       .then(function () {
         console.log('Skip to next');
       });
     } else if (direction === 'previous') {
-      spotifyWebApi.skipToPrevious()
+      spotifyApi.skipToPrevious()
       .then(function () {
         console.log('Skip to previous');
       });
@@ -128,7 +128,7 @@ function App() {
   function updateTrackProgress(value) {
     skipDurationMessage = true;
     setTrackProgress({...trackProgress, actual: value})
-    spotifyWebApi.seek(value)
+    spotifyApi.seek(value)
     .then(function () {
       console.log('Seek to ' + value);
       });
@@ -137,33 +137,22 @@ function App() {
   return (
     <div className="App">
       <a href='http://localhost:8888/'>
-        <button>Login With Spotify</button>
+        <div id='login'>Login</div>
       </a>
-      <div>
-        Now Playing: {nowPlaying.name}
+      <div id='now-playing-img-div'>
+        <img id='now-playing-img' src={nowPlaying?.album?.images[0]?.url} alt="Album Art" width='300' height='300' />
       </div>
-      <div>
-        <img src={nowPlaying?.album?.images[0]?.url} alt="Album Art" width='200' />
+      <div id='now-playing-name'>
+        {nowPlaying.name}
       </div>
-      <button onClick={() => getNowPlaying()}>
-        Update Now Playing
-      </button>
-      <button onClick={() => testing()}>
-        Test
-      </button>
-      <button onClick={() => getAllDevices()}>
-        Get Devices
-      </button>
-      <button onClick={() => transferPlayback(targetTransferDevice)}>
-        Transfer Playback
-      </button>
-      <select id='transferPlaybackSelection' onChange={e => {setTargetTransferDevice(e.target.value)}}>
+      <select id='transfer-playback-selection' value={activeDevice.id} onChange={e => {transferPlayback(e.target.value)}}>
         {
           currentDevices.map(device => {
             return <DeviceList key={device.id} id={device.id} name={device.name} />
           })
         }
       </select>
+      <ion-icon id='dropdown-arrow' name="chevron-down-sharp"></ion-icon>
       <div id='progress'>
         <input id="progress-slider" type="range" value={trackProgress.actual} onMouseDown={e => {ignoreDurationMessages = true; setTrackProgress({...trackProgress, actual: e.target.value})}} onChange={e => {setTrackProgress({...trackProgress, actual: e.target.value})}} onMouseUp={e => {ignoreDurationMessages = false; updateTrackProgress(e.target.value)}} min='0' max={trackProgress.max} />
       </div>
@@ -181,6 +170,9 @@ function App() {
       <div id="volume">
         <input id='volume-slider' type="range" value={volume} onMouseDown={e => {ignoreVolumeMessages = true; setVolume(e.target.value)}} onChange={e => {setVolume(e.target.value)}} onMouseUp={e => {setUserVolume(e.target.value)}} className="slider" min="0" max="100" />
       </div>
+      <button onClick={() => testing()} style={{display: "block", margin: "50px auto"}}>
+        Test
+      </button>
       <div>
         {testingData}
       </div><div>

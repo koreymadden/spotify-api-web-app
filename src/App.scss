@@ -1,46 +1,114 @@
+$primary: #1aa34a;
+$primary-hover: #1ed760;
+$secondary: #282828;
+$third: #d3d3d3;
+$third-hover: #efefef;
+$black: #000000;
+
+* {
+  font-family: 'Segoe UI';
+  font-size: 16px;
+  text-decoration: none;
+  outline: none;
+  border: none;
+}
+
+body {
+  background-color: $third-hover;
+}
+
+button {
+  background-color: $primary;
+  padding: 5px 20px;
+  border-radius: 50px;
+  transition: 500ms;
+  cursor: pointer;
+  &:hover {
+    background-color: $primary-hover;
+  }
+}
+
 .App {
   text-align: center;
   max-width: 90%;
   margin: 0 auto;
+  margin-top: 30px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+#now-playing-name {
+  font-size: 32px;
+  margin-top: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+#login {
+  left: 0;
+  position: relative;
+  height: 35px;
+  width: 80px;
+  background-color: $primary;
+  cursor: pointer;
+  margin: 10px;
+  border-radius: 50px;
+  line-height: 35px;
+  display: block;
+  transition: 500ms;
+  text-decoration: none;
+  color: #000000;
+  &:hover {
+    background-color: $primary-hover;
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+#now-playing-img-div {
+  margin-top: 80px;
 }
 
-.App-link {
-  color: #61dafb;
+#transfer-playback-selection {
+  margin-top: 25px;
+  text-align-last: center;
+  border: none;
+  outline: none;
+  min-width: 200px;
+  height: 45px;
+  background-color: $primary;
+  border-radius: 50px;
+  padding: 5px 5px;
+  appearance: none;
+  cursor: pointer;
+  display: inline-block;
+  right: -10px;
+  position: relative;
+  transition: 500ms;
+  &:hover {
+    background-color: $primary-hover;
+  }
+}
+
+#dropdown-arrow {
+  display: inline-block;
+  position: relative;
+  width: 10px !important;
+  left: -15px;
+  top: 2px;
+  width: 10px !important;
+  cursor: pointer;
 }
 
 #previous, #next, #play-pause {
   height: 50px;
   width: 50px;
-  background-color: #282c34;
+  background-color: $secondary;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #ffffff;
+  color: $third;
   margin: 25px;
   border-radius: 50%;
+  transition: 500ms;
   cursor: pointer;
+  &:hover {
+    color: #1ed760;
+  }
 }
 
 #player {
@@ -51,10 +119,10 @@
 #volume-slider {
   -webkit-appearance: none;
   width: 100%;
-  max-width: 200px;
+  max-width: 300px;
   height: 10px;
   border-radius: 50px;  
-  background: #d3d3d3;
+  background-color: $third;
   outline: none;
   cursor: pointer;
 }
@@ -65,7 +133,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%; 
-  background: #282c34;
+  background: $secondary;
   cursor: pointer;
 }
 
@@ -73,7 +141,7 @@
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: #282c34;
+  background: $secondary;
   cursor: pointer;
 }
 
@@ -81,9 +149,11 @@
   -webkit-appearance: none;
   width: 100%;
   height: 10px;
-  border-radius: 50px;  
-  background: #d3d3d3;
+  border-radius: 40px;  
+  background: $third;
   outline: none;
+  margin-top: 50px;
+  max-width: 1000px;
   cursor: pointer;
 }
 
@@ -93,7 +163,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%; 
-  background: #282c34;
+  background: $secondary;
   cursor: pointer;
 }
 
@@ -101,15 +171,6 @@
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: #282c34;
+  background: $secondary;
   cursor: pointer;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
