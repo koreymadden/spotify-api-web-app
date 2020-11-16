@@ -1,6 +1,7 @@
 $primary: #1aa34a;
 $primary-hover: #1ed760;
 $secondary: #282828;
+$secondary-hover: #949494;
 $third: #d3d3d3;
 $third-hover: #efefef;
 $black: #000000;
@@ -11,6 +12,22 @@ $black: #000000;
   text-decoration: none;
   outline: none;
   border: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: $black; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: $primary; 
 }
 
 body {
@@ -257,9 +274,11 @@ button {
     display: block;
     font-weight: 600;
     letter-spacing: 1px;
-    font-size: 48px;
+    font-size: 32px;
+    margin-bottom: 15px;
+    margin-top: 7px;
   }
-
+  overflow-y: auto;
 }
 
 .hide {
@@ -267,20 +286,61 @@ button {
 }
 
 .search-result {
-  display: block;
-  height: 40px;
+  display: inline-block;
+  font-size: 21px;
   line-height: 40px;
-  margin: 5px 5px;
-  overflow-x: hidden;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.search-info {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: flex;
+  flex-direction: column;
+}
+
+.result-artist {
+  line-height: 20px;
+  text-align: left;
+}
+
+.search-result-img {
+  display: inline-block;
+  height: 60px;
+  width: 60px;
+  margin-right: 15px;
+}
+
+.result-row {
+  margin: 0 auto;
+  max-width: 1000px;
+  display: flex;
   border-bottom: 1px solid $third-hover;
-  font-size: 18px;
+  cursor: pointer;
+  &:hover {
+    background-color: $third-hover;
+  }
+}
+
+.current-song {
+  color: $primary;
 }
 
 #close-search {
   position: fixed;
   top: 13px;
   right: 15px;
-  color: $secondary;
-  font-size: 48px;
+  color: $third;
+  font-size: 32px;
+  border-radius: 50%;
   cursor: pointer;
+  background-color: $secondary;
+}
+
+#track-duration {
+  margin-left: 15px;
 }

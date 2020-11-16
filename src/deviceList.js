@@ -6,4 +6,4 @@ const DeviceList = props => {
     );
 };
 
-export default DeviceList
+export default DeviceList;

@@ -6,6 +6,22 @@
   border: none;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #000000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1aa34a;
+}
+
 body {
   background-color: #efefef;
 }
@@ -290,6 +306,7 @@ button:hover {
   bottom: 50px;
   top: 0;
   background-color: #d3d3d3;
+  overflow-y: auto;
 }
 
 #search-results::before {
@@ -297,7 +314,9 @@ button:hover {
   display: block;
   font-weight: 600;
   letter-spacing: 1px;
-  font-size: 48px;
+  font-size: 32px;
+  margin-bottom: 15px;
+  margin-top: 7px;
 }
 
 .hide {
@@ -305,21 +324,70 @@ button:hover {
 }
 
 .search-result {
-  display: block;
-  height: 40px;
+  display: inline-block;
+  font-size: 21px;
   line-height: 40px;
-  margin: 5px 5px;
-  overflow-x: hidden;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: left;
+}
+
+.search-info {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+.result-artist {
+  line-height: 20px;
+  text-align: left;
+}
+
+.search-result-img {
+  display: inline-block;
+  height: 60px;
+  width: 60px;
+  margin-right: 15px;
+}
+
+.result-row {
+  margin: 0 auto;
+  max-width: 1000px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   border-bottom: 1px solid #efefef;
-  font-size: 18px;
+  cursor: pointer;
+}
+
+.result-row:hover {
+  background-color: #efefef;
+}
+
+.current-song {
+  color: #1aa34a;
 }
 
 #close-search {
   position: fixed;
   top: 13px;
   right: 15px;
-  color: #282828;
-  font-size: 48px;
+  color: #d3d3d3;
+  font-size: 32px;
+  border-radius: 50%;
   cursor: pointer;
+  background-color: #282828;
+}
+
+#track-duration {
+  margin-left: 15px;
 }
 /*# sourceMappingURL=App.css.map */

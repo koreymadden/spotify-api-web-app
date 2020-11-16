@@ -56,6 +56,10 @@ function App() {
   function getNowPlaying() {
     spotifyApi.getMyCurrentPlaybackState()
     .then(response => {
+      if (response === '') {
+        console.warn('You are not signed in!')
+        return
+      }
       document.title = response.item.name;
       setNowPlaying(response.item)
       setIsPlaying(response.is_playing)
@@ -68,6 +72,16 @@ function App() {
       }
       console.debug('Current Playback State:', response);
     })
+
+    fetch(
+      'https://api.spotify.com/v1/me',
+      {headers: {'Authorization': 'Bearer ' + loginStatus}}
+      ).then(response => {
+        return response.json()
+      }).then(data => {
+        console.log(data)
+        setUserData(data)
+      })
   }
 
   function setUserVolume(value) {
@@ -88,16 +102,6 @@ function App() {
           console.log(item.track.album.name)
         })
       });
-
-      fetch(
-        'https://api.spotify.com/v1/me',
-        {headers: {'Authorization': 'Bearer ' + loginStatus}}
-        ).then(response => {
-          return response.json()
-        }).then(data => {
-          console.log(data)
-          setUserData(data)
-        })
   }
 
   function getAllDevices() {
@@ -184,6 +188,19 @@ function App() {
     })
   }
 
+  function changeSong(uri) {
+    fetch(
+      'https://api.spotify.com/v1/me/player/queue?uri=' + uri,
+      {
+        method: 'POST',
+        headers: {'Authorization': 'Bearer ' + loginStatus}
+      }
+      ).then(response => {
+        console.log('response: ', response);
+        changeTrack('next');
+      })
+  }
+
   return (
     <div className="App">
       <a id='login-a' href='http://localhost:8888/'>
@@ -240,7 +257,11 @@ function App() {
       <div className='hide' id='search-results' data-text={document.getElementById('search-songs')?.value || ''}>
         {
           searchedTracks.map(track => {
-            return <SearchResult key={track.id} name={track.name} />
+            return (
+              <div key={track.id} onClick={() => changeSong(track.uri)}>
+                <SearchResult image={track.album.images[0].url} name={track.name} artists={track.artists} duration={track.duration_ms} trackId={track.id} activeSong={nowPlaying.id} />
+              </div>
+            )
           })
         }
       </div>
@@ -249,7 +270,7 @@ function App() {
       </div>
       <div id="status-bar">
         <ion-icon id="search-songs-icon" name="search-sharp"></ion-icon>
-        <input type="search" autoComplete='off' name="Songs" id='search-songs' onChange={e => {searchSongs(e.target.value); toggleSearch('open', e.target.value)}} />
+        <input type="search" onKeyPress={e => {searchSongs(e.target.value); toggleSearch('open', e.target.value)}} autoComplete='off' name="Songs" id='search-songs' onChange={e => {searchSongs(e.target.value); toggleSearch('open', e.target.value)}} />
       </div>
     </div>
   );
