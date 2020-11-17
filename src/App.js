@@ -1,8 +1,8 @@
-import './App.css';
+import './styles/App.css';
 import { useState, useEffect } from 'react';
 import SpotifyWebApi from 'spotify-web-api-js';
-import DeviceList from './deviceList'
-import SearchResult from './SearchResult';
+import DeviceList from './components/DeviceList'
+import SearchResult from './components/SearchResult';
 
 const spotifyApi = new SpotifyWebApi();
 
@@ -19,6 +19,7 @@ function App() {
   const [currentDevices, setCurrentDevices] = useState([])
   const [volume, setVolume] = useState(-1)
   const [searchedTracks, setSearchedTracks] = useState([])
+  const [ignoreVolumeMessages, setIgnoreVolumeMessages] = useState(false)
   const [trackProgress, setTrackProgress] = useState({
     actual: 0,
     max: 100
@@ -27,7 +28,6 @@ function App() {
   let skipVolumeMessage = false;
   let skipDurationMessage = false;
   let ignoreDurationMessages = false;
-  let ignoreVolumeMessages = false;
 
   if (loginStatus) {
     spotifyApi.setAccessToken(loginStatus)
@@ -65,7 +65,9 @@ function App() {
       setIsPlaying(response.is_playing)
       setActiveDevice(response.device)
       if (volume === -1 && !ignoreVolumeMessages) {
-        !skipVolumeMessage ? setVolume(response.device.volume_percent) : skipVolumeMessage = false;
+        !skipVolumeMessage 
+        ? setVolume(response.device.volume_percent) 
+        : skipVolumeMessage = false;
       }
       if (!ignoreDurationMessages) {
         !skipDurationMessage ? setTrackProgress({...trackProgress, actual: response.progress_ms, max: response.item.duration_ms}) : skipDurationMessage = false;
@@ -242,9 +244,6 @@ function App() {
           <ion-icon name="play-forward-sharp" onClick={() => {changeTrack('next')}}></ion-icon>
         </div>
       </div>
-      <div id="volume">
-        <input id='volume-slider' type="range" value={volume} onMouseDown={e => {ignoreVolumeMessages = true; setVolume(e.target.value)}} onChange={e => {setVolume(e.target.value)}} onMouseUp={e => {setUserVolume(e.target.value)}} className="slider" min="0" max="100" />
-      </div>
       <button onClick={() => testing()} style={{display: "block", margin: "50px auto"}}>
         Test
       </button>
@@ -271,6 +270,10 @@ function App() {
       <div id="status-bar">
         <ion-icon id="search-songs-icon" name="search-sharp"></ion-icon>
         <input type="search" onKeyPress={e => {searchSongs(e.target.value); toggleSearch('open', e.target.value)}} autoComplete='off' name="Songs" id='search-songs' onChange={e => {searchSongs(e.target.value); toggleSearch('open', e.target.value)}} />
+        
+        <div id="volume">
+          <input id='volume-slider' type="range" value={volume} onMouseDown={e => {setIgnoreVolumeMessages(true); setVolume(e.target.value)}} onChange={e => {setVolume(e.target.value)}} onMouseUp={e => {setUserVolume(e.target.value)}} className="slider" min="0" max="100" />
+        </div>
       </div>
     </div>
   );

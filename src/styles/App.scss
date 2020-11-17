@@ -167,10 +167,15 @@ button {
   justify-content: center;
 }
 
+#volume {
+  position: fixed;
+  right: 15px;
+  width: 100px;
+}
+
 #volume-slider {
   -webkit-appearance: none;
   width: 100%;
-  max-width: 300px;
   height: 10px;
   border-radius: 50px;  
   background-color: $third;
@@ -184,7 +189,7 @@ button {
   width: 20px;
   height: 20px;
   border-radius: 50%; 
-  background: $secondary;
+  background: $primary;
   cursor: pointer;
 }
 
@@ -192,7 +197,7 @@ button {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: $secondary;
+  background: $primary;
   cursor: pointer;
 }
 
@@ -343,4 +348,50 @@ button {
 
 #track-duration {
   margin-left: 15px;
+}
+
+.volume-animation {
+  height: 100%;
+  margin: 0 25px;
+  transform: rotate(180deg);
+}
+
+.volume-animation li{
+  display:inline-block;
+}
+
+.volume-animation li span{
+  display:block;
+  width: 5px;
+  animation: volumeAnimation 400ms linear infinite alternate;
+}
+
+@keyframes volumeAnimation {
+  0%{height:5px;}
+  100%{height:30px;}
+}
+
+li:nth-child(1) span{
+  background:$primary;
+  animation-delay:0.3s;
+}
+
+li:nth-child(2) span{
+  background:$black;
+  animation-duration:0.7s;
+}
+
+li:nth-child(3) span{
+  background:$primary;
+  animation-delay:0.8s;
+}
+
+li:nth-child(4) span{
+  background:$black;
+  animation-delay:0.4s;
+}
+
+li:nth-child(5) span{
+  background:$primary;
+  animation-duration:0.6s;
 }

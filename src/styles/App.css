@@ -196,10 +196,15 @@ button:hover {
           justify-content: center;
 }
 
+#volume {
+  position: fixed;
+  right: 15px;
+  width: 100px;
+}
+
 #volume-slider {
   -webkit-appearance: none;
   width: 100%;
-  max-width: 300px;
   height: 10px;
   border-radius: 50px;
   background-color: #d3d3d3;
@@ -213,7 +218,7 @@ button:hover {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #282828;
+  background: #1aa34a;
   cursor: pointer;
 }
 
@@ -221,7 +226,7 @@ button:hover {
   width: 25px;
   height: 25px;
   border-radius: 50%;
-  background: #282828;
+  background: #1aa34a;
   cursor: pointer;
 }
 
@@ -389,5 +394,71 @@ button:hover {
 
 #track-duration {
   margin-left: 15px;
+}
+
+.volume-animation {
+  height: 100%;
+  margin: 0 25px;
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+
+.volume-animation li {
+  display: inline-block;
+}
+
+.volume-animation li span {
+  display: block;
+  width: 5px;
+  -webkit-animation: volumeAnimation 400ms linear infinite alternate;
+          animation: volumeAnimation 400ms linear infinite alternate;
+}
+
+@-webkit-keyframes volumeAnimation {
+  0% {
+    height: 5px;
+  }
+  100% {
+    height: 30px;
+  }
+}
+
+@keyframes volumeAnimation {
+  0% {
+    height: 5px;
+  }
+  100% {
+    height: 30px;
+  }
+}
+
+li:nth-child(1) span {
+  background: #1aa34a;
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s;
+}
+
+li:nth-child(2) span {
+  background: #000000;
+  -webkit-animation-duration: 0.7s;
+          animation-duration: 0.7s;
+}
+
+li:nth-child(3) span {
+  background: #1aa34a;
+  -webkit-animation-delay: 0.8s;
+          animation-delay: 0.8s;
+}
+
+li:nth-child(4) span {
+  background: #000000;
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s;
+}
+
+li:nth-child(5) span {
+  background: #1aa34a;
+  -webkit-animation-duration: 0.6s;
+          animation-duration: 0.6s;
 }
 /*# sourceMappingURL=App.css.map */

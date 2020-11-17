@@ -34,6 +34,19 @@ const SearchResult = ({ image, name, artists, duration, trackId, activeSong }) =
                     <span id='track-duration'>{formatDuration(duration)}</span>
                 </div>
             </div>
+            {
+                currentSong && (
+                <div>
+                    <ul className="volume-animation">
+                        <li><span>&nbsp;</span></li>
+                        <li><span>&nbsp;</span></li>
+                        <li><span>&nbsp;</span></li>
+                        <li><span>&nbsp;</span></li>
+                        <li><span>&nbsp;</span></li>
+                    </ul>
+                </div>
+                )
+            }
         </div>
     );
 };
