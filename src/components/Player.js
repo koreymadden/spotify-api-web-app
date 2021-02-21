@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import DeviceList from './DeviceList'
 import SearchResult from './SearchResult';
+import NoAlbumArt from '../images/no-album-art.png'; 
 
 const Player = ({ spotifyApi, accessToken, userData }) => {
-  const [counter, changeCounter] = useState(0);
-  
   const [nowPlaying, setNowPlaying] = useState({})
   const [isPlaying, setIsPlaying] = useState(false)
+  const [artists, setArtists] = useState([])
   const [activeDevice, setActiveDevice] = useState({})
-  const [testingData, setTestingData] = useState('Test Data')
   const [currentDevices, setCurrentDevices] = useState([])
   const [volume, setVolume] = useState(-1)
   const [searchedTracks, setSearchedTracks] = useState([])
@@ -28,7 +27,6 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
 
   useEffect(() => {
     setInterval(() => {
-      changeCounter(prevCounter => prevCounter + 1);
       getNowPlaying()
     }, 1000);
   }, []);
@@ -36,10 +34,17 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
   function getNowPlaying() {
     spotifyApi.getMyCurrentPlaybackState()
       .then(response => {
+        if (!response.item) {
+          console.warn('returning getNowPlaying')
+          return
+        }
         document.title = response.item.name;
         setNowPlaying(response.item)
         setIsPlaying(response.is_playing)
         setActiveDevice(response.device)
+        let artists = [];
+        response.item.artists.forEach(artistObj => artists.push(artistObj.name))
+        setArtists(artists)
         if (volume === -1 && !ignoreVolumeMessages) {
           !skipVolumeMessage
             ? setVolume(response.device.volume_percent) 
@@ -56,6 +61,9 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
         }
         console.debug('Current Playback State:', response);
       })
+      .catch(e => {
+        // console.warn('An error has occured:', e)
+      })
   }
 
   function setUserVolume(value) {
@@ -66,22 +74,12 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
       });
   }
 
-  function testing() {
-    let limit = 3;
-    spotifyApi.getMyRecentlyPlayedTracks({
-      limit
-    }).then(function (data) {
-      console.log(`Your ${limit} most recently played tracks are:`);
-      data.items.forEach(item => {
-        console.log(item.track.album.name)
-      })
-    });
-  }
-
   function getAllDevices() {
     spotifyApi.getMyDevices()
       .then(response => {
         setCurrentDevices(response.devices)
+      }).catch(e => {
+        // there was an error fetching user devices
       })
   }
 
@@ -133,7 +131,7 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
       toggleSearch('close')
       return
     }
-    spotifyApi.searchTracks(searchText)
+    spotifyApi.searchTracks(searchText, {limit: 50})
       .then(function (data) {
         console.log(`Search by "${searchText}"`, data);
         setSearchedTracks(data.tracks.items)
@@ -178,10 +176,20 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
       changeTrack('next');
     })
   }
+  function formatTime(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.round(seconds % 60);
+    return [
+      h,
+      m > 9 ? m : (h ? '0' + m : m || '0'),
+      s > 9 ? s : '0' + s
+    ].filter(Boolean).join(':');
+  }
 
   return ( 
     <div className="App">
-      <a id='login-a' href='http://localhost:8888/'>
+      <a id='login-a' href='http://localhost:8888/login'>
         <div id='login'>{
           userData.display_name 
             ? <span>{userData.display_name}</span> 
@@ -190,13 +198,16 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
         </div>
       </a>
       <div id='now-playing-img-div'>
-        <img id='now-playing-img' src={nowPlaying?.album?.images[0]?.url} alt="Album Art" width='300' height='300' />
+        <img id='now-playing-img' src={nowPlaying?.album?.images[0]?.url || NoAlbumArt} alt="Album Art" width='300' height='300' />
         <div className="overlay" onClick={() => addToFavorites()}>
           <ion-icon name="heart-sharp"></ion-icon>
         </div>
       </div>
       <div id='now-playing-name'>
         {nowPlaying.name}
+      </div>
+      <div id='now-playing-artists'>
+        {artists.join(', ')}
       </div>
       <select id='transfer-playback-selection' value={activeDevice.id} onChange={e => {transferPlayback(e.target.value)}}>
         {
@@ -208,6 +219,10 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
       <ion-icon id='dropdown-arrow' name="chevron-down-sharp"></ion-icon>
       <div id='progress'>
         <input id="progress-slider" type="range" value={trackProgress.actual} onMouseDown={e => {ignoreDurationMessages = true; setTrackProgress({...trackProgress, actual: e.target.value})}} onChange={e => {setTrackProgress({...trackProgress, actual: e.target.value})}} onMouseUp={e => {ignoreDurationMessages = false; updateTrackProgress(e.target.value)}} min='0' max={trackProgress.max} />
+        <div id='time-stamps'>
+          <div id='time-played'>{formatTime(trackProgress.actual / 1000)}</div>
+          <div id='time-remaining'>{formatTime((trackProgress.max - trackProgress.actual) / 1000)}</div>
+        </div>
       </div>
       <div id='player'>
         <div id="previous">
@@ -220,16 +235,7 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
           <ion-icon name="play-forward-sharp" onClick={() => {changeTrack('next')}}></ion-icon>
         </div>
       </div>
-      <button onClick={() => testing()} style={{display: "block", margin: "50px auto"}}>
-        Test
-      </button>
-      <div>
-        {testingData}
-      </div>
-      <div>
-        {counter}
-      </div>
-      <div className='hide' id='search-results' data-text={document.getElementById('search-songs')?.value || ''}>
+      <div className='hide' id='search-results' data-text={document.getElementById('search-songs')?.value || ''} onClick={() => document.getElementById("search-songs").focus()}>
         {
           searchedTracks.map(track => {
             return (

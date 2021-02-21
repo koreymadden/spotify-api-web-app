@@ -40,15 +40,18 @@ function App() {
     ).then(response => {
       return response.json()
     }).then(data => {
-      console.log('userData', data)
-      setUserData(data)
+      if (data?.error?.status === 401) {
+        console.warn('the access token is invalid')
+      } else {
+        setUserData(data)
+      }
     })
   }
 
   return (
     <>
       {
-        loginStatus
+        loginStatus && Object.keys(userData).length > 0
         ? (<Player spotifyApi={spotifyApi} accessToken={accessToken} userData={userData} />)
         : (<Login />)
       }

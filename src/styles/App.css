@@ -1,5 +1,5 @@
 * {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: 'Nanum Gothic', sans-serif;
   font-size: 16px;
   text-decoration: none;
   outline: none;
@@ -46,9 +46,29 @@ button:hover {
   margin-top: 30px;
 }
 
+#time-stamps {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
 #now-playing-name {
-  font-size: 32px;
-  margin-top: 20px;
+  font-size: 28px;
+  margin: 20px auto 0 auto;
+  text-align: left;
+  max-width: 1000px;
+}
+
+#now-playing-artists {
+  font-size: 16px;
+  margin: 5px auto 0 auto;
+  text-align: left;
+  max-width: 1000px;
 }
 
 #login {
@@ -59,11 +79,10 @@ button:hover {
   min-width: -webkit-max-content;
   min-width: -moz-max-content;
   min-width: max-content;
-  background-color: #1aa34a;
+  background-color: transparent;
   cursor: pointer;
   margin: 10px;
   padding: 0 15px;
-  border-radius: 50px;
   line-height: 35px;
   display: inline-block;
   -webkit-transition: 500ms;
@@ -82,6 +101,9 @@ button:hover {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  width: -webkit-min-content;
+  width: -moz-min-content;
+  width: min-content;
 }
 
 #now-playing-img-div {
@@ -135,7 +157,7 @@ button:hover {
   outline: none;
   min-width: 200px;
   height: 45px;
-  background-color: #1aa34a;
+  background-color: transparent;
   border-radius: 50px;
   padding: 5px 5px;
   -webkit-appearance: none;
@@ -147,10 +169,11 @@ button:hover {
   position: relative;
   -webkit-transition: 500ms;
   transition: 500ms;
+  color: #1aa34a;
 }
 
 #transfer-playback-selection:hover {
-  background-color: #1ed760;
+  color: #1ed760;
 }
 
 #dropdown-arrow {
@@ -161,12 +184,12 @@ button:hover {
   top: 2px;
   width: 10px !important;
   cursor: pointer;
+  margin-left: 7px;
 }
 
-#previous, #next, #play-pause {
+#previous, #next {
   height: 50px;
   width: 50px;
-  background-color: #282828;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -176,7 +199,36 @@ button:hover {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  color: #d3d3d3;
+  color: #282828;
+  margin: 25px;
+  -webkit-transition: 500ms;
+  transition: 500ms;
+  cursor: pointer;
+}
+
+#previous:hover, #next:hover {
+  color: #1ed760;
+}
+
+#previous ion-icon, #next ion-icon {
+  font-size: 30px;
+}
+
+#play-pause {
+  height: 65px;
+  width: 65px;
+  background-color: transparent;
+  border: 4px solid #282828;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: #282828;
   margin: 25px;
   border-radius: 50%;
   -webkit-transition: 500ms;
@@ -184,8 +236,13 @@ button:hover {
   cursor: pointer;
 }
 
-#previous:hover, #next:hover, #play-pause:hover {
+#play-pause:hover {
   color: #1ed760;
+  border-color: #1ed760;
+}
+
+#play-pause ion-icon {
+  font-size: 30px;
 }
 
 #player {
@@ -195,6 +252,9 @@ button:hover {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
 }
 
 #volume {
@@ -206,7 +266,7 @@ button:hover {
 #volume-slider {
   -webkit-appearance: none;
   width: 100%;
-  height: 10px;
+  height: 5px;
   border-radius: 50px;
   background-color: #d3d3d3;
   outline: none;
@@ -216,8 +276,8 @@ button:hover {
 #volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #1aa34a;
   cursor: pointer;
@@ -234,7 +294,7 @@ button:hover {
 #progress-slider {
   -webkit-appearance: none;
   width: 100%;
-  height: 10px;
+  height: 5px;
   border-radius: 40px;
   background: #d3d3d3;
   outline: none;
@@ -246,16 +306,16 @@ button:hover {
 #progress-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #282828;
   cursor: pointer;
 }
 
 #progress-slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #282828;
   cursor: pointer;
