@@ -3,7 +3,7 @@ import DeviceList from './DeviceList'
 import SearchResult from './SearchResult';
 import NoAlbumArt from '../images/no-album-art.png'; 
 
-const Player = ({ spotifyApi, accessToken, userData }) => {
+const Player = ({ spotifyApi, accessToken, userData, mouseMoved }) => {
   const [nowPlaying, setNowPlaying] = useState({})
   const [isPlaying, setIsPlaying] = useState(false)
   const [artists, setArtists] = useState([])
@@ -189,14 +189,19 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
 
   return ( 
     <div className="App">
-      <a id='login-a' href='http://localhost:8888/login'>
-        <div id='login'>{
-          userData.display_name 
-            ? <span>{userData.display_name}</span> 
-            : <span id='login-text'>Login</span>
-          }
+        <div id='top-menu'>
+          <ion-icon style={{fontSize: '21px'}} name="arrow-back-sharp"></ion-icon>
+          <a id='login-a' href='http://localhost:8888/login'>
+            <div id='login'>{
+              userData.display_name 
+                ? <span id='user-display-name'>{userData.display_name}</span> 
+                : <span id='login-text'>Login</span>
+              }
+            </div>
+          </a>
+          <ion-icon style={{fontSize: '21px'}} name="ellipsis-horizontal-sharp"></ion-icon>
         </div>
-      </a>
+      
       <div id='now-playing-img-div'>
         <img id='now-playing-img' src={nowPlaying?.album?.images[0]?.url || NoAlbumArt} alt="Album Art" width='300' height='300' />
         <div className="overlay" onClick={() => addToFavorites()}>
@@ -247,11 +252,11 @@ const Player = ({ spotifyApi, accessToken, userData }) => {
         }
       </div>
       <div id='close-search-div' className="hide">
-        <ion-icon id='close-search' name="close-sharp" onClick={() => toggleSearch('close')}></ion-icon>
+        <ion-icon id='close-search' name="close-sharp" onClick={() => {toggleSearch('close'); mouseMoved()}}></ion-icon>
       </div>
       <div id="status-bar">
         <ion-icon id="search-songs-icon" name="search-sharp"></ion-icon>
-        <input type="search" onKeyPress={e => {searchSongs(e.target.value); toggleSearch('open', e.target.value)}} autoComplete='off' name="Songs" id='search-songs' onChange={e => {searchSongs(e.target.value); toggleSearch('open', e.target.value)}} />
+        <input onBlur={() => mouseMoved()} spellCheck='false' type="search" onKeyPress={e => {searchSongs(e.target.value); toggleSearch('open', e.target.value)}} autoComplete='off' name="Songs" id='search-songs' onChange={e => {searchSongs(e.target.value); toggleSearch('open', e.target.value)}} onClick={() => mouseMoved()} />
         
         <div id="volume">
           <input id='volume-slider' type="range" value={volume} onMouseDown={e => {setIgnoreVolumeMessages(true); setVolume(e.target.value)}} onChange={e => {setVolume(e.target.value)}} onMouseUp={e => {setUserVolume(e.target.value)}} className="slider" min="0" max="100" />

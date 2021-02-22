@@ -10,6 +10,7 @@ function App() {
   const [loginStatus, setLoginStatus] = useState(false)
   const [accessToken, setAccessToken] = useState()
   const [userData, setUserData] = useState({})
+  let statusTimer;
 
 
   function getHashParams() {
@@ -48,11 +49,26 @@ function App() {
     })
   }
 
+   let mouseMoved = (event) => {
+     if (!document.getElementById('status-bar') || !document.getElementById('user-display-name')) return
+    if (document.getElementById('status-bar').style.display === 'none' || document.getElementById('status-bar').style.display === '') document.getElementById('status-bar').style.display = 'flex'
+    if (document.getElementById('user-display-name').style.display === 'none' || document.getElementById('user-display-name').style.display === '') document.getElementById('user-display-name').style.display = 'block'
+    clearTimeout(statusTimer)
+    if (document.getElementById('search-results').classList.contains('hide') && (document.getElementById('search-songs') !== document.activeElement)) {
+      statusTimer = setTimeout(() => {
+        document.getElementById('status-bar').style.display = 'none'
+        document.getElementById('user-display-name').style.display = 'none'
+      }, 3500);
+    }
+  }
+
+  document.onmousemove = () => mouseMoved()
+
   return (
     <>
       {
         loginStatus && Object.keys(userData).length > 0
-        ? (<Player spotifyApi={spotifyApi} accessToken={accessToken} userData={userData} />)
+        ? (<Player spotifyApi={spotifyApi} accessToken={accessToken} userData={userData} mouseMoved={mouseMoved} />)
         : (<Login />)
       }
     </>
